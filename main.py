@@ -24,6 +24,14 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
 
+# Create add post form
+class BlogPostForm(FlaskForm):
+    title = StringField(label="Title", validators={DataRequired()})
+    subtitle = StringField(label="Subtitle", validators=[DataRequired()])
+    author = StringField(label="Author", validators=[DataRequired()])
+    bg_img_url = StringField(label="Background Image URL", validators=[DataRequired(), URL()])
+    body = StringField(label="Body", validators=[DataRequired()])
+
 # CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
 db = SQLAlchemy()
