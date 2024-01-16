@@ -33,6 +33,7 @@ class BlogPostForm(FlaskForm):
     author = StringField(label="Author", validators=[DataRequired()])
     blog_img_url = StringField(label="Blog Image URL", validators=[DataRequired(), URL()])
     body = CKEditorField(label="Blog Content", validators=[DataRequired()])
+    submit = SubmitField(label="Submit Post")
 
 # CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
