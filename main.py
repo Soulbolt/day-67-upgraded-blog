@@ -23,14 +23,14 @@ This will install the packages from the requirements.txt for this project.
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
-# app.config['CKEDITOR_PKG_TYPE'] = 'basic'
+date_time = date.today().strftime("%B %w, %Y")
 ckeditor = CKEditor(app)
 
 # Create add post form
 class BlogPostForm(FlaskForm):
-    title = StringField(label="Title", validators={DataRequired()})
+    title = StringField(label="Blog Post Title", validators={DataRequired()})
     subtitle = StringField(label="Subtitle", validators=[DataRequired()])
-    author = StringField(label="Author", validators=[DataRequired()])
+    author = StringField(label="Your Name", validators=[DataRequired()])
     blog_img_url = StringField(label="Blog Image URL", validators=[DataRequired(), URL()])
     body = CKEditorField(label="Blog Content", validators=[DataRequired()])
     submit = SubmitField(label="Submit Post")
@@ -72,23 +72,23 @@ def show_post():
     return render_template("post.html", post=requested_post)
 
 
-# TODO: add_new_post() to create a new blog post
+# add_new_post() to create a new blog post
 @app.route("/new-post", methods=["GET", "POST"])
 def add_post():
-    blog_post_form = BlogPostForm()
-    if request.method == "POST":
-        new_post = {
-            "title": request.form.get("title"),
-            "subtitle": request.form.get("subtitle"),
-            "date": request.form.get("date"),
-            "body": request.form.get("body"),
-            "author": request.form.get("author"),
-            "img_url": request.form.get("img_url")
-        }
+    form = BlogPostForm()
+    if form.validate_on_submit():
+        new_post = BlogPost(
+            title = form.title.data,
+            subtitle = form.subtitle.data,
+            date = date_time,
+            body = form.body.data,
+            author = form.author.data,
+            img_url = form.blog_img_url.data
+        )
         db.session.add(new_post)
         db.session.commit()
-        return redirect("index.html")
-    return render_template("make-post.html", form=blog_post_form)
+        return redirect(url_for("get_all_posts"))
+    return render_template("make-post.html", form=form)
 
 # TODO: edit_post() to change an existing blog post
 
